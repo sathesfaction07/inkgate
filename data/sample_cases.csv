@@ -1,0 +1,9 @@
+case_id,merchant_name,product_id,category,marketplace,decision,reason
+BG-1001,Acme Supplies,SKU-40001,toys,US,reject,missing_docs: no test report attached
+BG-1002,Bolt Goods,SKU-40002,toys,UK,approve,
+BG-1003,Cog Trading,SKU-40003,batteries,DE,reject,expired certificate issued 2019
+BG-1004,Dyn Retail,SKU-40004,electronics,US,need_info,
+BG-1005,Eon Direct,SKU-40005,toys,JP,escalate,conflicting data between title and certificate
+BG-1006,Fab Imports,SKU-40006,batteries,US,reject,unreadable scan
+BG-1007,Gem Traders,SKU-40007,toys,US,reject,incomplete submission
+BG-1008,Helix Co,SKU-40008,laser_products,US,approve,

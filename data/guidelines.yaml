@@ -1,0 +1,39 @@
+version: 2
+
+banned_phrases:
+  - "we guarantee"
+  - "we promise"
+  - "definitely will"
+  - "as soon as possible"
+  - "unfortunately"
+  - "you failed"
+  - "your fault"
+  - "obviously"
+
+required_elements:
+  - id: greeting
+    any_of: ["hello", "hi ", "dear"]
+    weight: 1.0
+    detail: opens by addressing the merchant
+
+  - id: product_reference
+    any_of: ["submission for", "certificate you submitted", "reviewing"]
+    weight: 2.0
+    detail: names what was reviewed so the merchant knows which item this concerns
+
+  - id: next_steps
+    any_of: ["to resolve this", "please provide", "please reply", "please upload", "no further action"]
+    weight: 3.0
+    detail: states what the merchant should do next, even if that is nothing
+
+  - id: recourse
+    any_of: ["reply to this message", "reply with", "made in error", "will contact you"]
+    weight: 2.0
+    detail: gives the merchant a route to respond or contest
+    applies_to_decisions: [reject, need_info, escalate]
+
+tone_notes:
+  - Plain, direct, and neutral. State the finding without editorialising.
+  - Never blame the merchant or imply carelessness.
+  - Do not commit to a turnaround time or a specific outcome.
+  - Prefer "we were unable to approve" over "we rejected".

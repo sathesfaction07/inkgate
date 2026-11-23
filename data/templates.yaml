@@ -1,0 +1,107 @@
+version: 3
+updated: 2026-09-16
+
+templates:
+  - id: reject_missing_documentation
+    version: 3
+    applies_to:
+      decision: reject
+      reasons: [missing_docs, incomplete, no_certificate]
+    required_variables: [merchant_name, product_id, reason]
+    length:
+      min_chars: 200
+      max_chars: 1100
+    body: |
+      Hello {merchant_name},
+
+      We reviewed your submission for {product_id} and are unable to approve it at this time.
+
+      What we found: {reason}
+
+      To resolve this, please provide the missing documentation through the compliance
+      portal. Submissions are reviewed in the order received once complete documentation
+      is attached.
+
+      If you believe this decision was made in error, you can reply to this message with
+      additional context and we will take another look.
+
+  - id: reject_invalid_certificate
+    version: 3
+    applies_to:
+      decision: reject
+      reasons: [expired, invalid_certificate, unreadable]
+    required_variables: [merchant_name, product_id, reason]
+    length:
+      min_chars: 200
+      max_chars: 1100
+    body: |
+      Hello {merchant_name},
+
+      We reviewed the certificate you submitted for {product_id} and are unable to accept it.
+
+      What we found: {reason}
+
+      To resolve this, please upload a current, legible certificate issued by an accredited
+      body. Scans should show the full document including issue and expiry dates.
+
+      If you believe this decision was made in error, reply with additional context and we
+      will review it again.
+
+  - id: need_info_generic
+    version: 3
+    applies_to:
+      decision: need_info
+    required_variables: [merchant_name, product_id]
+    length:
+      min_chars: 150
+      max_chars: 900
+    body: |
+      Hello {merchant_name},
+
+      We have started reviewing {product_id} and need more information before we can
+      complete the review.
+
+      To resolve this, please reply with the requested details through the compliance
+      portal. Your submission stays open while we wait.
+
+      If anything in this request is unclear, reply to this message and we will clarify.
+
+  - id: approve_standard
+    version: 3
+    applies_to:
+      decision: approve
+    required_variables: [merchant_name, product_id]
+    length:
+      min_chars: 120
+      max_chars: 700
+    body: |
+      Hello {merchant_name},
+
+      Your submission for {product_id} has been reviewed and approved. No further action
+      is needed from you.
+
+      If your product details change, please submit updated documentation so the record
+      stays current.
+
+  - id: escalate_conflicting_data
+    version: 3
+    applies_to:
+      decision: escalate
+      reasons: [conflicting, contradictory, ambiguous]
+    required_variables: [merchant_name, product_id, reason]
+    length:
+      min_chars: 180
+      max_chars: 900
+    body: |
+      Hello {merchant_name},
+
+      Your submission for {product_id} has been referred to a specialist team for closer
+      review.
+
+      Why: {reason}
+
+      To resolve this, no action is needed from you right now. A specialist will contact
+      you if they need anything further.
+
+      If you have additional documentation that may help, you can reply to this message
+      and it will be added to the case.
