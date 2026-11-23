@@ -1,4 +1,4 @@
-# BlurbGen
+# Inkgate
 
 Generates merchant-facing decision messages from version-controlled templates, then scores each one against writing guidelines and refuses to mark it ready if it fails. Runs with no credentials at all using a deterministic rule engine; AWS Bedrock or Google Vertex can be swapped in for classification and scoring.
 
@@ -41,7 +41,7 @@ Nothing is ever auto-sent. The output is `ready` (a human can send it as-is), `n
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          CLI (blurb-gen)                             │
+│                          CLI (inkgate)                             │
 │                                                                     │
 │   generate        batch            templates         providers      │
 │   one case        CSV/JSON in,     list + validate   availability   │
@@ -98,7 +98,7 @@ Nothing is ever auto-sent. The output is `ready` (a human can send it as-is), `n
 ## Project Structure
 
 ```
-blurb-gen/
+inkgate/
 ├── src/blurb_gen/
 │   ├── cli.py                 generate / batch / templates / providers
 │   ├── config.py              Pydantic Settings, BG_ prefix
@@ -132,31 +132,31 @@ bash setup.sh
 source .venv/bin/activate
 
 # Which providers can this machine actually use?
-blurb-gen providers
+inkgate providers
 
 # Are the templates well-formed?
-blurb-gen templates --validate
-blurb-gen templates                 # list them with versions and conditions
+inkgate templates --validate
+inkgate templates                 # list them with versions and conditions
 
 # One case
-blurb-gen generate \
+inkgate generate \
   --case-id BG-2001 --decision reject \
   --merchant "Acme Supplies" --product-id SKU-99001 \
   --reason "missing_docs: no CPC on file"
 
 # Show why it scored what it scored
-blurb-gen generate --case-id BG-2001 --decision approve \
+inkgate generate --case-id BG-2001 --decision approve \
   --product-id SKU-1 --show-criteria
 
 # Batch, CSV in and CSV out
-blurb-gen batch data/sample_cases.csv --output out/
+inkgate batch data/sample_cases.csv --output out/
 
 # Only emit what passed the gate (the full report still contains everything)
-blurb-gen batch data/sample_cases.csv --output out/ --ready-only
+inkgate batch data/sample_cases.csv --output out/ --ready-only
 
 # Excel, or an LLM provider
-blurb-gen batch data/sample_cases.csv --output out/ --format excel
-blurb-gen batch data/sample_cases.csv --output out/ --provider bedrock
+inkgate batch data/sample_cases.csv --output out/ --format excel
+inkgate batch data/sample_cases.csv --output out/ --provider bedrock
 ```
 
 ---
@@ -254,7 +254,7 @@ The cost is a validator, because YAML lets you write templates that are structur
 
 **Decision-scoped guidelines came out of watching real output.** My first `guidelines.yaml` demanded a "recourse" element — a route to contest — on every message. Running the sample batch, every approval flagged `missing required element: recourse`, which is nonsense: there is nothing to contest about an approval. Rather than pad the approval template with fake contest language to satisfy the checker, I added `applies_to_decisions` so an element can be scoped. Mean quality on the sample set went from 96.7 to 100, and the 100 is now honest rather than the 96.7 being noise.
 
-**Everything is in memory and batches are sequential.** No checkpointing, no concurrency. Generation is CPU-cheap under the rule provider, so this is fine — but with an LLM provider a batch of 5,000 becomes two serial API calls per case with no resume. AdaptiveFetch in this portfolio solves exactly that problem and I deliberately did not import its machinery here; this project is about the gate, and adding a governor would have buried it.
+**Everything is in memory and batches are sequential.** No checkpointing, no concurrency. Generation is CPU-cheap under the rule provider, so this is fine — but with an LLM provider a batch of 5,000 becomes two serial API calls per case with no resume. Ballast in this portfolio solves exactly that problem and I deliberately did not import its machinery here; this project is about the gate, and adding a governor would have buried it.
 
 **One bad case never stops the batch.** `generate_batch` wraps each case, and an exception becomes a `failed` row carrying the exception text. The usual cost applies: a broken `templates.yaml` path produces N failures that look like N bad cases. `templates --validate` and `providers` exist as the pre-flight checks for that.
 

@@ -76,7 +76,7 @@ The banned-phrase check therefore appears in two places: as a scored criterion (
 Against the shipped templates and guidelines:
 
 ```
-$ blurb-gen generate --case-id BG-2002 --decision reject \
+$ inkgate generate --case-id BG-2002 --decision reject \
     --product-id SKU-99002 --reason "missing_docs, we guarantee a fast turnaround"
 
 status          needs_review

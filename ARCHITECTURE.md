@@ -1,8 +1,8 @@
-# BlurbGen — Technical Architecture
+# Inkgate — Technical Architecture
 
 ## Overview
 
-BlurbGen turns a compliance decision into a merchant-facing message. It classifies a case to select a template from a version-controlled YAML set, renders it, scores the result against writing guidelines, and then gates it — nothing is marked ready to send unless it clears both a quality threshold and a set of deterministic defect checks. The default provider is a rule engine that needs no credentials; AWS Bedrock or Google Vertex can be swapped in for classification and scoring.
+Inkgate turns a compliance decision into a merchant-facing message. It classifies a case to select a template from a version-controlled YAML set, renders it, scores the result against writing guidelines, and then gates it — nothing is marked ready to send unless it clears both a quality threshold and a set of deterministic defect checks. The default provider is a rule engine that needs no credentials; AWS Bedrock or Google Vertex can be swapped in for classification and scoring.
 
 **Design principle:** An aggregate score is the wrong instrument for a binary compliance requirement. Quality is judged on a weighted average; objective defects — a leaked `{placeholder}`, a banned phrase — hard-gate regardless of score, and are always checked in Python rather than delegated to a model.
 
@@ -12,7 +12,7 @@ BlurbGen turns a compliance decision into a merchant-facing message. It classifi
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                            CLI (blurb-gen)                                │
+│                            CLI (inkgate)                                │
 │                                                                         │
 │  ┌────────────┐  ┌────────────┐  ┌──────────────┐  ┌────────────────┐  │
 │  │ generate   │  │ batch      │  │ templates    │  │ providers      │  │
@@ -116,7 +116,7 @@ BlurbGen turns a compliance decision into a merchant-facing message. It classifi
 
 ### 1. CLI (`src/blurb_gen/cli.py`)
 
-Four Click commands. Entry point `blurb-gen`.
+Four Click commands. Entry point `inkgate`.
 
 | Command | Purpose |
 |:--|:--|
@@ -214,7 +214,7 @@ Writers share `ROW_FIELDS` for a stable column order. Excel colours the status c
 ## Data Flow
 
 ```
-1.  blurb-gen batch data/sample_cases.csv --output out/ --format csv
+1.  inkgate batch data/sample_cases.csv --output out/ --format csv
 2.  CLI drops None overrides -> Settings(templates_path=..., provider="rules", ...)
 3.  load_cases() reads 8 rows; "decision" strings map to the Decision enum;
     unknown columns collected into Case.extras
@@ -271,7 +271,7 @@ Objective defects are facts about the text and are checked deterministically. Qu
 Verified against the shipped data:
 
 ```
-$ blurb-gen generate --case-id BG-2002 --decision reject \
+$ inkgate generate --case-id BG-2002 --decision reject \
     --product-id SKU-99002 --reason "missing_docs, we guarantee a fast turnaround"
 
 status          needs_review
@@ -361,22 +361,22 @@ bash setup.sh --excel         # + openpyxl
 bash setup.sh --all
 source .venv/bin/activate
 
-blurb-gen providers
-blurb-gen templates
-blurb-gen templates --validate
+inkgate providers
+inkgate templates
+inkgate templates --validate
 
-blurb-gen generate \
+inkgate generate \
   --case-id BG-2001 --decision reject \
   --merchant "Acme Supplies" --product-id SKU-99001 \
   --reason "missing_docs: no CPC on file"
 
-blurb-gen generate --case-id BG-2001 --decision approve \
+inkgate generate --case-id BG-2001 --decision approve \
   --product-id SKU-1 --show-criteria
 
-blurb-gen batch data/sample_cases.csv --output out/
-blurb-gen batch data/sample_cases.csv --output out/ --ready-only
-blurb-gen batch data/sample_cases.csv --output out/ --format excel
-blurb-gen batch data/sample_cases.csv --output out/ --provider bedrock
+inkgate batch data/sample_cases.csv --output out/
+inkgate batch data/sample_cases.csv --output out/ --ready-only
+inkgate batch data/sample_cases.csv --output out/ --format excel
+inkgate batch data/sample_cases.csv --output out/ --provider bedrock
 ```
 
 ---
@@ -399,6 +399,6 @@ Coverage by file:
 - `test_io.py` — CSV and JSON loading, unknown decisions, extras becoming variables, whitespace trimming, all three writers, stable column order, empty input
 - `integration/test_cli.py` — all four commands, `--validate` exit code 1 on a broken file, the banned-phrase gate end to end, `--ready-only` filtering while the full report keeps everything, and template version recorded for audit
 
-The two shipped YAML files are covered by tests, so editing a template and breaking it fails the suite rather than shipping. CI also runs `blurb-gen templates --validate` as a separate step.
+The two shipped YAML files are covered by tests, so editing a template and breaking it fails the suite rather than shipping. CI also runs `inkgate templates --validate` as a separate step.
 
 Not covered: the real Bedrock and Vertex calls. Their prompt construction, JSON extraction and `None`-on-failure behaviour are unit-testable and tested; the network path is not exercised.

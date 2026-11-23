@@ -109,7 +109,7 @@ from blurb_gen.core.pipeline import Pipeline, summarise
 from blurb_gen.io import write_csv
 from blurb_gen.models import Case, Decision, Status
 
-work = Path(tempfile.mkdtemp(prefix="blurb-gen-verify-"))
+work = Path(tempfile.mkdtemp(prefix="inkgate-verify-"))
 try:
     cfg = Settings(
         templates_path=Path("data/templates.yaml"),
@@ -198,9 +198,9 @@ Setup complete.
 
   source .venv/bin/activate
 
-  blurb-gen providers                  # what can this machine use
-  blurb-gen templates --validate       # are the templates sound
-  blurb-gen batch data/sample_cases.csv --output out/
+  inkgate providers                  # what can this machine use
+  inkgate templates --validate       # are the templates sound
+  inkgate batch data/sample_cases.csv --output out/
 
 Nothing is ever auto-sent. Every blurb comes back ready, needs_review, or failed.
 DONE

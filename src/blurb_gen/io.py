@@ -101,7 +101,7 @@ def write_excel(blurbs: list[Blurb], path: Path) -> str:
         from openpyxl.styles import Alignment, Font
     except ImportError as exc:
         raise RuntimeError(
-            "excel output needs openpyxl. Install with: pip install 'blurb-gen[excel]'"
+            "excel output needs openpyxl. Install with: pip install 'inkgate[excel]'"
         ) from exc
 
     path.parent.mkdir(parents=True, exist_ok=True)

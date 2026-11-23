@@ -26,7 +26,7 @@ jobs:
         run: ruff check src tests
 
       - name: Validate shipped templates
-        run: blurb-gen templates --validate
+        run: inkgate templates --validate
 
       - name: Test
         run: pytest -q --cov=blurb_gen --cov-report=term-missing

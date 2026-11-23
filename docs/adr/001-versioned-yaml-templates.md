@@ -45,7 +45,7 @@ Each template declares more than its body:
 
 `applies_to` drives selection, `required_variables` is checked before rendering, and `length` feeds the quality scorer.
 
-Because YAML accepts structurally broken content that Python would have rejected at import time, `blurb-gen templates --validate` runs five checks and exits non-zero on any failure:
+Because YAML accepts structurally broken content that Python would have rejected at import time, `inkgate templates --validate` runs five checks and exits non-zero on any failure:
 
 1. Body uses a `{variable}` not declared in `required_variables`
 2. `required_variables` declares something the body never uses

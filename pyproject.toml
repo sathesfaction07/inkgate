@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "blurb-gen"
+name = "inkgate"
 version = "1.0.0"
 description = "Generates merchant-facing decision blurbs from versioned templates, then scores and gates them before they are marked ready to send"
 readme = "README.md"
@@ -27,7 +27,7 @@ dev = [
 ]
 
 [project.scripts]
-blurb-gen = "blurb_gen.cli:main"
+inkgate = "blurb_gen.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/blurb_gen"]
