@@ -37,7 +37,7 @@ def load_cases(path: Path) -> list[Case]:
         raise FileNotFoundError(f"input not found: {path}")
 
     if path.suffix.lower() == ".json":
-        raw = json.loads(path.read_text())
+        raw = json.loads(path.read_text(encoding="utf-8"))
         rows = raw if isinstance(raw, list) else [raw]
         return [_to_case(r) for r in rows]
 
@@ -91,7 +91,7 @@ def write_json(blurbs: list[Blurb], summary: dict[str, Any], path: Path) -> str:
             {"summary": summary, "blurbs": [b.model_dump(mode="json") for b in blurbs]},
             indent=2,
         )
-    )
+, encoding="utf-8")
     return str(path)
 
 

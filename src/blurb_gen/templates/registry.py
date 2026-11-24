@@ -81,7 +81,7 @@ class TemplateRegistry:
     def load(cls, path: Path) -> "TemplateRegistry":
         if not path.exists():
             raise FileNotFoundError(f"templates not found: {path}")
-        raw = yaml.safe_load(path.read_text()) or {}
+        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         return cls(TemplateSet(**raw))
 
     @property

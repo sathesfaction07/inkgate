@@ -27,7 +27,7 @@ class Guidelines(BaseModel):
     def load(cls, path: Path) -> "Guidelines":
         if not path.exists():
             raise FileNotFoundError(f"guidelines not found: {path}")
-        raw = yaml.safe_load(path.read_text()) or {}
+        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         return cls(**raw)
 
     def elements_for(self, decision: Decision) -> list[RequiredElement]:
